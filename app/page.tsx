@@ -12,7 +12,7 @@ interface WeatherData {
 }
 
 function getCondition(code: number): Condition {
-  if (code === 0) return 'clear'
+  if (code <= 1) return 'clear'
   if (code <= 3) return 'cloudy'
   if (code <= 49) return 'foggy'
   if (code <= 67) return 'rainy'
