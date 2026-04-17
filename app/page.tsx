@@ -6,6 +6,8 @@ type Condition = 'clear' | 'cloudy' | 'rainy' | 'stormy' | 'snowy' | 'foggy'
 
 interface WeatherData {
   temp: number
+  feelsLike: number
+  uvIndex: number
   condition: Condition
 }
 
@@ -282,11 +284,13 @@ export default function WeatherWidget() {
   }, [])
 
   useEffect(() => {
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=35.8456&longitude=-86.3903&current=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=America%2FChicago')
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=35.8456&longitude=-86.3903&current=temperature_2m,apparent_temperature,weathercode,uv_index&temperature_unit=fahrenheit&timezone=America%2FChicago')
       .then(r => r.json())
       .then(data => {
         setWeather({
           temp: Math.round(data.current.temperature_2m),
+          feelsLike: Math.round(data.current.apparent_temperature),
+          uvIndex: Math.round(data.current.uv_index),
           condition: getCondition(data.current.weathercode),
         })
       })
@@ -321,6 +325,9 @@ export default function WeatherWidget() {
             <div>
               <p className="text-white font-semibold text-xl leading-tight drop-shadow">Murfreesboro</p>
               <p className="text-white/80 text-base drop-shadow">Tennessee</p>
+              <p className="text-white/60 text-xs mt-1 drop-shadow">
+                Feels like {weather.feelsLike}°&nbsp;&nbsp;·&nbsp;&nbsp;UV {weather.uvIndex}
+              </p>
             </div>
           </div>
         )}
